@@ -1,0 +1,143 @@
+package demo2;
+import static io.restassured.RestAssured.*;
+import static  io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+public class TC_VideoGameAPI {
+    //@Test(priority=1)
+	public void test_getDetails() {
+    	given()
+    	
+    	.when()
+    	    .get("https://petstore.swagger.io/#/pet/findPetsByStatus")
+    	.then()
+    	    .statusCode(200);
+    }
+	
+	//@Test(priority=2)
+	public void test_post_placeOrder() {
+		//https://petstore.swagger.io/#/store/placeOrder
+		HashMap d1=new HashMap();
+		d1.put("id", "100");
+		d1.put("petId", "10");
+		d1.put("quantity", "1");
+		d1.put("shipDate", "2024-09-23T20:00:38.362Z");
+		d1.put("status", "placed");
+		d1.put("complete", "true");
+		
+		Response resp=
+		given()
+		    .contentType("application/json")
+		    .body(d1)
+		.when()
+		    .post("https://petstore.swagger.io/v2/store/order")
+		.then()
+		    .statusCode(200)
+		    .log().body()
+		    .extract().response();
+		
+		String jsonString=resp.asString();
+		
+		assertEquals(jsonString.contains("placed"),true);
+		
+		
+	}
+	
+	@Test(priority=3)
+	public void get_DatabyIdorStatus() {
+		given()
+		.when()
+		    .get("https://petstore.swagger.io/v2/store/order/100")
+		.then()
+		   .statusCode(200)
+		   .log().body()
+		   .body("id",equalTo(100))
+		   .body("complete", equalTo(true))
+		   .body("status",equalTo("placed"));
+		   }
+	@Test
+	public void post_DataCreate2() {
+		HashMap<String, Object> d = new HashMap<>();
+
+	    HashMap<String, Object> category = new HashMap<>();
+	    category.put("id", 0);
+	    category.put("name", "string");
+
+	    HashMap<String, Object> tag = new HashMap<>();
+	    tag.put("id", 0);
+	    tag.put("name", "string");
+
+	    d.put("id", 0);
+	    d.put("category", category);
+	    d.put("name", "doggie");
+	    d.put("photoUrls", new String[]{"string"});
+	    d.put("tags", new HashMap[]{tag});
+	    d.put("status", "available");
+
+	    given()
+	        .contentType(ContentType.JSON)
+	        .body(d)
+	    .when()
+	        .put("https://petstore.swagger.io/v2/pet")
+	    .then()
+	        .statusCode(200)
+	        .log().body();
+	}
+	@Test
+	public void put_DataUpdate() {
+		HashMap<String, Object> d = new HashMap<>();
+
+	    HashMap<String, Object> category = new HashMap<>();
+	    category.put("id", 0);
+	    category.put("name", "string");
+
+	    HashMap<String, Object> tag = new HashMap<>();
+	    tag.put("id", 0);
+	    tag.put("name", "string");
+
+	    d.put("id", 0);
+	    d.put("category", category);
+	    d.put("name", "doggie");
+	    d.put("photoUrls", new String[]{"string"});
+	    d.put("tags", new HashMap[]{tag});
+	    d.put("status", "available");
+
+	    given()
+	        .contentType(ContentType.JSON)
+	        .body(d)
+	    .when()
+	        .put("https://petstore.swagger.io/v2/pet")
+	    .then()
+	        .statusCode(200)
+	        .log().body();
+	}
+	
+	@Test
+	public void delete() {
+	
+Response res=
+  
+    given()
+       
+    .when()
+        .delete("https://petstore.swagger.io/v2/pet/1") // Specify the pet ID in the URL
+    .then()
+        .statusCode(200)
+        .log().body()
+        .extract().response();
+ 
+        String jsonResponse=res.asString();
+        System.out.println("--------------------------------------"+jsonResponse); // Print the JSON response
+        
+}
+}

@@ -1,0 +1,87 @@
+package SeleniumJavaAssignment1;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.Set;
+public class windowSample 
+{
+	public static void main(String[] args) {
+
+
+		// Initialize the WebDriver
+		WebDriver  driver = new ChromeDriver();
+
+		driver = new ChromeDriver();
+		driver.get("https://www.google.com/");
+		String current=driver.getWindowHandle();
+		
+//		// Open the DemoQA Browser Windows page
+//		driver.get("https://demoqa.com/browser-windows");
+//
+//		// Maximize the window
+//		driver.manage().window().maximize();
+//
+//		// Click the "New Tab" button
+//		driver.findElement(By.id("tabButton")).click();
+//
+//		// Switch to the new tab
+//		String originalWindow = driver.getWindowHandle();//current or main window
+//		Set<String> allWindows = driver.getWindowHandles();//all windows 
+//		for (String window : allWindows) {
+//			if (!window.equals(originalWindow)) {
+//				driver.switchTo().window(window);
+//				break;
+//			}
+//		}
+//
+//		// Print the URL of the new tab
+//		System.out.println("New tab URL: " + driver.getCurrentUrl());
+//
+//		// Close the new tab and switch back to the original window
+//		driver.close();
+//		driver.switchTo().window(originalWindow);
+//
+//		// Click the "New Window" button
+//		driver.findElement(By.id("windowButton")).click();
+//
+//		// Switch to the new window
+//		allWindows = driver.getWindowHandles();
+//		for (String window : allWindows) {
+//			if (!window.equals(originalWindow)) {
+//				driver.switchTo().window(window);
+//				break;
+//			}
+//		}
+//
+//		// Print the URL of the new window
+//		System.out.println("New window URL: " + driver.getCurrentUrl());
+//
+//		// Close the new window and switch back to the original window
+//		driver.close();
+//		driver.switchTo().window(originalWindow);
+//
+//		// Click the "New Window Message" button
+//		driver.findElement(By.id("messageWindowButton")).click();
+//
+//		// Switch to the new window message
+//		allWindows = driver.getWindowHandles();
+//		for (String window : allWindows) {
+//			if (!window.equals(originalWindow)) {
+//				driver.switchTo().window(window);
+//				break;
+//			}
+//		}
+//
+//		// Print the content of the new window message
+//		String messageWindowText = driver.findElement(By.tagName("body")).getText();
+//		System.out.println("New window message content: " + messageWindowText);
+//
+//		// Close the new window message and switch back to the original window
+//		driver.close();
+//		driver.switchTo().window(originalWindow);
+//
+//		// Close the original window
+//		driver.quit();
+//	}
+
+}

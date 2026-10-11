@@ -1,0 +1,34 @@
+package Demo1;
+import static io.restassured.RestAssured.*;
+import static  io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
+import java.util.HashMap;
+
+import org.testng.annotations.Test;
+
+public class HttpRequestPost {
+	
+	@Test
+	void testPost_UsingHashmap() {
+	
+	HashMap data1=new HashMap();
+	data1.put("name", "demo1");
+	data1.put("place", "Paris");
+	data1.put("mobile", "9090900909");
+	String skills[]= {"Phython","Java","JS"};//array -multiple values for a variable.
+	data1.put("skillsets", skills);
+	
+	given()
+	  .contentType("application/json")
+	  .body(data1)
+	.when()
+	  .post("https://petstore.swagger.io/?_gl=1*mqlx04*_gcl_au*ODEwNjU0NTc4LjE3MjcxMTc5MDA.#/pet/addPet") 
+	.then()
+	.then()
+    .statusCode(200)
+    .body("page",equalTo(2))
+    .log().all();
+	
+	}
+
+}

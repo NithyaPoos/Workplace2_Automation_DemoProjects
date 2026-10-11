@@ -1,0 +1,256 @@
+package SeleniumJavaAssignment1;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class InteractionsDemo {
+
+	public void sortable(WebDriver driver,WebDriverWait wait,JavascriptExecutor js,Actions a) throws InterruptedException {
+		 // Navigate to the DemoQA sortable page
+        driver.navigate().to("https://demoqa.com/sortable");
+    
+        String curretWindowHandle=driver.getWindowHandle();
+        //Set<String> allWindowHandles=driver.getWindowHandles();
+        for(String handle:driver.getWindowHandles()) 
+        {
+        	if(!handle.equals(currentWindowHandle))
+        		driver.switchTo().window(curretWindowHandle);
+        	driver.close();
+        }
+        
+        // Locate the list of sortable items
+        List<WebElement> sortableItems = driver.findElements(By.xpath("//div[@id='demo-tabpane-list']//div[@class='list-group-item list-group-item-action']"));
+        // Sorting by reversing the order of the list items
+      System.out.println("sortableitems :: before ");
+      sortableItems.forEach(item -> System.out.print(item.getText() + " "));
+        int totalItems = sortableItems.size();
+        for (int i = 1; i < totalItems; i++) {
+            WebElement sourceElement = sortableItems.get(i);  // Current element
+            WebElement targetElement = sortableItems.get(totalItems- i);  
+          
+            //Drag and drop operation
+            a.clickAndHold(sourceElement)
+           // .moveByOffset(0, 20)// Move slightly downward to avoid overlap
+            .moveToElement(targetElement)
+            .release()
+            .build()
+            .perform();
+         // Optionally wait between each sort operation for observation
+            Thread.sleep(1000);  // 1-second delay to observe the sorting process
+       } 
+        System.out.println("sortableitems :: after ");
+        sortableItems.forEach(item -> System.out.print(item.getText() + " "));
+        System.out.println("done sorting");
+	}
+       
+	
+	public void selectable(WebDriver driver,WebDriverWait wait,JavascriptExecutor js,Actions a) throws InterruptedException {
+		driver.navigate().to("https://demoqa.com/selectable");
+		//list
+		//List<WebElement> selectablelist=driver.findElements(By.xpath("//ul[@id='verticalListContainer']/li"));
+		List<WebElement> selectablelist=driver.findElements(By.cssSelector("#verticalListContainer li"));
+        //selectablelist.forEach(item -> (System.out.print(item.getText() + " ")));
+//		for(WebElement li:selectablelist) 
+//	{
+//		System.out.println("list items :: "+li.getText());
+//		js.executeScript("arguments[0].click();", li);
+//		
+//		}
+		
+		//grid
+		WebElement grid1=driver.findElement(By.xpath("//a[@id='demo-tab-grid']"));
+		js.executeScript("arguments[0].scrollIntoView(true);",grid1);
+		grid1.click();
+		//*[@id="row1"]/li
+		//*[@id="row2"]/li
+		//*[@id="row3"]/li
+		 List<WebElement> rowItems = driver.findElements(By.xpath("//div[@id='gridContainer']//li"));
+		// Select specific elements (for example, first, third, and fifth)
+//         js.executeScript("arguments[0].click();", rowItems.get(0)); // First item
+//        js.executeScript("arguments[0].click();", rowItems.get(2)); // Third item
+//         Thread.sleep(500); // Wait to observe the selection
+//		 for (int i = 0; i < rowItems.size(); i++) {
+//             if (i == 0 || i == 2 || i == 4) {
+//                 // Perform JavaScript click only on the specific items (1st, 3rd, 5th)
+//                 js.executeScript("arguments[0].click();", rowItems.get(i));
+//                 System.out.println("select index :: "+ rowItems.get(i).getText());
+//                 Thread.sleep(500); // Brief pause to observe the selection
+//             }
+//         }
+ 
+		 for (WebElement item : rowItems) {
+		
+        
+        	 js.executeScript("arguments[0].click();", item);
+             System.out.println("row - selected :: "+item.getText());
+             Thread.sleep(500);  // Adding a sleep to observe the selection
+         }
+
+        
+
+
+        // Click on the first three selectable items
+		
+//        for (int i = 0; i < selectablelist.size(); i++) {
+//            js.executeScript("arguments[0].click();", selectablelist.get(i));
+//          System.out.println("selected :: "+selectablelist.get(i).getText());
+//            Thread.sleep(1000);  // Adding a sleep to observe the selection
+//        }
+		
+	}
+	
+	public void resizable(WebDriver driver,WebDriverWait wait,JavascriptExecutor js) 
+	{
+	driver.navigate().to("https://demoqa.com/resizable");
+	WebElement resizableElement=driver.findElement(By.id("resizableBoxWithRestriction"));
+	WebElement resizableHandle=driver.findElement(By.xpath("//*[@id=\"resizableBoxWithRestriction\"]/span"));
+	wait.until(ExpectedConditions.elementToBeClickable(resizableElement));
+	// Scroll the resizable element into view
+    js.executeScript("arguments[0].scrollIntoView(true);", resizableElement);
+	// Get the initial size of the resizable element
+    int initialWidth = resizableElement.getSize().getWidth();
+    int initialHeight = resizableElement.getSize().getHeight();
+    System.out.println("Initial size: " + initialWidth + "x" + initialHeight);
+
+	Actions a=new Actions(driver);
+//a.dragAndDropBy(resizableHandle, 100, 100).build().perform();
+	a.clickAndHold(resizableHandle).moveByOffset(-100,-100).release().build().perform();
+	// Wait for a moment to ensure the resize action is completed
+    try {
+        Thread.sleep(1000); // Adjust the sleep duration if necessary
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+	// Get the new size of the resizable element
+    int newWidth = resizableElement.getSize().getWidth();
+    int newHeight = resizableElement.getSize().getHeight();
+    System.out.println("New size: " + newWidth + "x" + newHeight);
+		
+    WebElement box1=driver.findElement(By.xpath("//*[@id=\"resizable\"]"));
+    WebElement handle1=driver.findElement(By.xpath("//*[@id=\"resizable\"]/span"));
+   int x=box1.getSize().width;
+   int y=box1.getSize().height;
+   System.out.println("old size second : " + x + "x" + y);
+   wait.until(ExpectedConditions.elementToBeClickable(box1));
+	// Scroll the resizable element into view
+   js.executeScript("arguments[0].scrollIntoView(true);", box1);
+    a.clickAndHold(handle1).moveByOffset(-20, -20).release().build().perform();
+    int x1=box1.getSize().width;
+    int y1=box1.getSize().height; 
+    System.out.println("New size second : " + x1 + "x" + y1);
+	}
+	public void droppable(WebDriver driver,WebDriverWait wait,JavascriptExecutor js,Actions a) {
+		driver.navigate().to("https://demoqa.com/droppable");
+		driver.findElement(By.xpath("//*[@id=\"droppableExample-tab-simple\"]")).click();
+		WebElement dragged=driver.findElement(By.xpath("//*[@id=\"draggable\"]"));
+		int d1=dragged.getLocation().getY();
+		int x1=dragged.getLocation().getX();
+		System.out.println("before dropped ::"+d1+"::"+x1); 
+		WebElement dropped=driver.findElement(By.xpath("//div[@id='simpleDropContainer']//div[@id='droppable']"));
+		a.dragAndDrop(dragged, dropped).build().perform();
+		int d2=dragged.getLocation().getY();
+		int x2=dragged.getLocation().getX();
+		System.out.println("after dropped ::"+d2+"::"+x2); 
+		System.out.println("text after dropped :: "+dragged.getText()+"::"+dropped.getText());
+		//accept tab
+		WebElement link2=driver.findElement(By.xpath("//a[@id='droppableExample-tab-accept']"));
+		 wait.until(ExpectedConditions.elementToBeClickable(link2));
+			// Scroll the resizable element into view
+		 js.executeScript("arguments[0].scrollIntoView(true);", link2);
+		 link2.click();
+		WebElement drag1=driver.findElement(By.xpath("//div[@id='acceptable']"));
+		WebElement drag2=driver.findElement(By.xpath("//div[@id='notAcceptable']"));
+		WebElement drop=driver.findElement(By.xpath("//div[@id='acceptDropContainer']//div[@id='droppable']"));
+		// Get the location of the droppable area
+		Point dropLocation = drop.getLocation();
+		// Get the size of the drop area to calculate where to drop
+		Dimension dropSize = drop.getSize();
+		int x=dropSize.getHeight();
+		int y=dropSize.getWidth();
+     a.clickAndHold(drag1).moveToElement(drop, 5, 5).release().perform();
+	  a.clickAndHold(drag2).moveToElement(drop, x/4, y/4).release().perform();
+		// Perform drag and drop for the first element to its manually set position
+//		a.clickAndHold(drag1)
+//		 .moveByOffset(dropLocation.getX() + 102, dropLocation.getY() + 27) // Move to (left: 202px, top: 27px)
+//		 .release()
+//		 .perform();
+//
+//		// Perform drag and drop for the second element to its manually set position
+//		a.clickAndHold(drag2)
+//		 .moveByOffset(dropLocation.getX() + 122, dropLocation.getY() + 19) // Move to (left: 202px, top: 19px)
+//		 .release()
+//		 .perform();
+		// Get the size of the drop area to calculate where to drop
+	//prevent propogation
+	  WebElement pp= driver.findElement(By.xpath("//a[@id='droppableExample-tab-preventPropogation']"));
+	  js.executeScript("arguments[0].scrollIntoView(true);", pp);
+	  pp.click();
+	  WebElement dragy=driver.findElement(By.xpath("//div[@id='dragBox']"));
+	  System.out.println("draggy loca before dropped :: "+dragy.getLocation());
+	  WebElement dropy=driver.findElement(By.xpath("//div[@id='notGreedyInnerDropBox']"));
+	  WebElement dropy2=driver.findElement(By.xpath("//div[@id='greedyDropBoxInner']"));
+	  a.dragAndDrop(dragy, dropy).build().perform();
+	  System.out.println("draggy loca after dropped :: "+dragy.getLocation());
+	  System.out.println("dropped 3 ");
+	}
+	
+	public void dragabble(WebDriver driver,WebDriverWait wait,JavascriptExecutor js,Actions a) {
+		//simple link
+		driver.navigate().to("https://demoqa.com/dragabble");
+		WebElement simplelink=driver.findElement(By.xpath("//a[@id='draggableExample-tab-simple']"));
+		simplelink.click();
+		WebElement drag=driver.findElement(By.xpath("//div[@id='dragBox']"));
+		System.out.println("before drop :: "+drag.getLocation());
+		int x=drag.getLocation().getX();
+	    int y=drag.getLocation().getY();
+		a.dragAndDropBy(drag,10,5 ).build().perform();
+		System.out.println("after drop :: "+drag.getLocation());
+		
+		//axis restricted
+		WebElement axislink=driver.findElement(By.xpath("//a[@id='draggableExample-tab-axisRestriction']"));
+		axislink.click();
+		WebElement drag1=driver.findElement(By.xpath("//div[@id='restrictedX']"));
+		WebElement drag2=driver.findElement(By.xpath("//div[@id='restrictedY']"));
+	
+		System.out.println("before drop1 :: "+drag1.getLocation());
+		int x1=drag.getLocation().getX();
+	    int y1=drag.getLocation().getY();
+		System.out.println("before drop2 :: "+drag2.getLocation());
+		a.dragAndDropBy(drag1, x1+5, y1+3).perform();
+		a.dragAndDropBy(drag2, 5, 5).perform();
+		System.out.println("after drop1 :: "+drag1.getLocation());
+		System.out.println("after drop2 :: "+drag2.getLocation());
+		
+	}
+	
+	public static void main(String[] args) throws InterruptedException {
+		
+			WebDriver driver;
+			driver=new ChromeDriver();
+			driver.manage().window().maximize();
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			WebDriverWait wait=new WebDriverWait(driver,Duration.ofSeconds(30));
+		    Actions a=new Actions(driver);
+			driver.get("https://demoqa.com/interaction");
+			InteractionsDemo s=new InteractionsDemo();
+			//s.resizable(driver, wait, js);
+			//s.droppable(driver, wait, js,a);
+			//s.dragabble(driver, wait, js,a);
+			//s.selectable(driver, wait, js,a);
+			s.sortable(driver, wait, js, a);
+
+	}
+
+}

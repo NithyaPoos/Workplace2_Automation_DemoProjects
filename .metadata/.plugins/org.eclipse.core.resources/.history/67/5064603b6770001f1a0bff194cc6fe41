@@ -1,0 +1,205 @@
+package demoqapageObjects;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class FormsPage extends BasePage{
+
+
+	@FindBy(xpath="//*[@id=\"item-0\"]/span[text()='Practice Form']") 
+	WebElement btn_practiceform_click;
+	@FindBy(id="firstName") 
+	WebElement txt_firstname;
+	@FindBy(id="lastName")
+	WebElement txt_lastname;
+	@FindBy(xpath="//input[@id='userEmail']")
+	WebElement txt_useremail;
+	@FindBy(xpath="//*[@id=\"genterWrapper\"]/div[2]/div[2]/label")
+	WebElement radio_btn_gender;
+	@FindBy(xpath="//*[@id=\"userNumber\"]") 
+	WebElement phone;
+	@FindBy(xpath="//*[@id='dateOfBirthInput']")
+	WebElement datePicker;
+	//@FindBy(xpath="//div[contains(@class, 'react-datepicker__day') and text()='" + day + "']")
+	//@FindBy(xpath = "//div[contains(@class, 'react-datepicker__day') and text()='4']")
+	//WebElement dateElement;
+	@FindBy(className="react-datepicker__month-select")
+	WebElement monthDropdown ;
+	@FindBy(className="react-datepicker__year-select")
+	WebElement yearDropdown;
+	@FindBy(id="subjectsInput")
+	WebElement txt_subject;
+	@FindBy(id="state")
+	WebElement state_dropdown;
+	@FindBy(xpath="//div[text()='NCR']")
+	WebElement state_option;
+	@FindBy(id="city")
+	WebElement cityDropdown;
+	@FindBy(xpath="//div[text()='Delhi']")
+	WebElement cityOption;
+	@FindBy(xpath="//label[@for='hobbies-checkbox-1']")
+	WebElement hobbyCheckbox; 
+	@FindBy(id="submit")
+	WebElement submitButton; 
+	@FindBy(id="example-modal-sizes-title-lg")
+	WebElement modal;
+	@FindBy(xpath="//*[@id='uploadPicture']")
+    WebElement file_uploadImage; 
+    @FindBy(xpath="//*[@id=\"currentAddress\"]")
+    WebElement txt_currentAddress;
+  
+
+	    WebDriverWait wait;
+	    JavascriptExecutor js;
+	    Actions actions;
+
+	    public FormsPage(WebDriver driver) {
+	        super(driver);
+	        wait = getWebDriverWait();
+	        js = getJavascriptExecutor();
+	        actions = new Actions(driver);
+	    }
+	    
+	public void practice_form_click()
+	{
+		btn_practiceform_click.click();
+	}
+	public void enter_user_firstname(String username) 
+	{
+		txt_firstname.sendKeys(username);
+	}
+	public void enter_user_lastname(String lastname) {
+		txt_lastname.sendKeys(lastname);
+	}
+	public void enter_user_email(String useremail) {
+		txt_useremail.sendKeys(useremail);
+	}
+	public void choose_gender() {
+		radio_btn_gender.click();
+	}
+	public void enter_user_phone(String telephone) {
+		phone.sendKeys(telephone);
+	}
+	public void enter_datefield(String day,String month,String year) {
+	
+		wait.until(ExpectedConditions.elementToBeClickable(datePicker));
+		js.executeScript("arguments[0].scrollIntoView(true);", datePicker);
+		datePicker.click();
+		monthDropdown.sendKeys(month);
+		yearDropdown.sendKeys(year);
+		// Dynamically locate the day element using XPath
+        String dynamicDayXPath = "//div[contains(@class, 'react-datepicker__day') and text()='" + day + "']";
+        WebElement dayElement = driver.findElement(By.xpath(dynamicDayXPath));
+        dayElement.click();
+		//dateElement.click();
+	}
+	public void enter_subject(String[] values) {
+		//WebElement subjectsInput = wait.until(ExpectedConditions.elementToBeClickable(txt_subject));		
+	   // List<String> selectedSubjects = new ArrayList<>();  // Store the selected subjects
+		wait.until(ExpectedConditions.elementToBeClickable(txt_subject));	
+		 // Clear the input before adding new values
+	    txt_subject.clear();
+	    for (String value : values) {
+	        // Type the subject value
+	        txt_subject.sendKeys(value);// Enter the value
+	        txt_subject.sendKeys(Keys.ENTER); 
+	        //txt_subject.sendKeys(",");// Add comma as delimiter
+	        // Simulate pressing Enter after each value to confirm the subject
+
+	    }
+	    
+	    String subjectsValue = txt_subject.getAttribute("value");
+	   // String subjectsValue = txt_subject.getAttribute("value").trim();  // Ensure no trailing spaces
+        System.out.println("Subjects: " + subjectsValue);
+	    }
+	public void State_City_dropdown_Selection() {
+		state_dropdown.click();
+		state_option.click();
+		cityDropdown.click();
+		cityOption.click();
+
+}
+	public void hobbies_checkbox_selection() {
+		js.executeScript("arguments[0].click();", hobbyCheckbox);
+	}
+	public void upload_picture_file(String path) {
+		file_uploadImage.sendKeys(path);
+	}
+	public void enter_currentAddress(String address) {
+		txt_currentAddress.sendKeys(address);
+	}
+	public void submit_form() {
+		js.executeScript("arguments[0].scrollIntoView(true);", submitButton);
+		submitButton.click();
+		 // Wait for the form to be submitted and check the values
+		 // Wait for the confirmation modal to be visible
+       // WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("example-modal-sizes-title-lg")));
+	}
+}
+
+	        // Wait for the dropdown to show and select the option
+//	        // WebElement subjectOption =  new WebDriverWait(driver, Duration.ofSeconds(20))
+//	        	    .until(ExpectedConditions.visibilityOfElementLocated(
+//	        	            By.xpath("//div[contains(@class, 'subjects-auto-complete__option') and text()='" + value + "']")));
+//	        actions.moveToElement(subjectOption).click().perform();
+//
+//	        // Add a small delay to ensure the selection registers before moving to the next input
+//	        try {
+//	            Thread.sleep(500); // Adjust the delay as needed
+//	        } catch (InterruptedException e) {
+//	            e.printStackTrace();
+//	        }
+
+	        // Clear the input field for the next subject
+//	        txt_subject.sendKeys(Keys.ESCAPE); // Clears any active dropdown
+//	        txt_subject.clear(); // Clear the text for the next input
+
+	        // Add the selected subject to the list
+//	        selectedSubjects.add(value);
+//	    }
+//	    
+////	    // Print the selected subjects for verification
+////	    System.out.println("Selected subjects: " + selectedSubjects);
+//	}
+
+	   
+//	  public void enter_subject(String[] values) {
+//		  
+////		  
+////	        for (String value : values) {
+////	            txt_subject.sendKeys(value);
+////	            //xpath("//div[contains(@class, 'subjects-auto-complete__option') and text()='Maths']")));
+////	            WebElement subjectOption = wait.until(ExpectedConditions.visibilityOfElementLocated(
+////	                By.xpath("//div[contains(@class, 'subjects-auto-complete__option') and text()='" + value + "']")));
+////	            actions.moveToElement(subjectOption).click().perform();
+////	            txt_subject.sendKeys(Keys.ENTER);
+////	            //subjectOption.click();
+////	  	        // Adding a small delay to ensure the field is ready for the next input
+////	            try {
+////	                Thread.sleep(500); // Adjust the delay as needed
+////	            } catch (InterruptedException e) {
+////	                e.printStackTrace();
+////	            }   //txt_subject.clear(); // Clear the input field for the next subject
+////	        
+////	        }
+//	    }
+//	public void enter_subject(String[] values) {
+//		for(String value:values) {
+//		txt_subject.sendKeys(value);
+//		 wait.until(ExpectedConditions.visibilityOf(input_subject));
+//		input_subject.click();
+//		}
+//	}
+	
+//}
